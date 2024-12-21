@@ -1,8 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'forgotpassword.dart';
 import 'homepage.dart';
-import 'login as utp.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,6 +10,61 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoginSelected = true; // Track which tab is selected
+  final TextEditingController mobileController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Signup Function
+  Future<void> signUp(String mobile, String password) async {
+    try {
+      // Check if the mobile number already exists
+      final existingUser = await _firestore
+          .collection('users')
+          .where('mobile', isEqualTo: mobile)
+          .get();
+
+      if (existingUser.docs.isNotEmpty) {
+        throw 'Mobile number already exists. Please log in.';
+      }
+
+      // Add new user to Firestore
+      await _firestore.collection('users').add({
+        'mobile': mobile,
+        'password': password, // Store plaintext for testing, hash in production
+        'createdAt': Timestamp.now(),
+      });
+
+      print("User Signed Up Successfully");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Sign Up Successful")));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+    } catch (e) {
+      print("Error during Sign Up: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Signup Failed: $e")));
+    }
+  }
+
+  // Login Function
+  Future<void> login(String mobile, String password) async {
+    try {
+      // Query Firestore for a matching user
+      final user = await _firestore
+          .collection('users')
+          .where('mobile', isEqualTo: mobile)
+          .where('password', isEqualTo: password)
+          .get();
+
+      if (user.docs.isEmpty) {
+        throw 'Invalid mobile number or password.';
+      }
+
+      print("User Logged In Successfully");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login Successful")));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+    } catch (e) {
+      print("Error during Login: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login Failed: $e")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginSignUpScreen()),
-                    );
-                    // Handle back button press
+                    Navigator.pop(context); // Handle back button press
                   },
                 ),
               ),
@@ -69,8 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                                 decoration: BoxDecoration(
                                   color: isLoginSelected
                                       ? Color(0xFF8C62F4)
@@ -95,8 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                                 decoration: BoxDecoration(
                                   color: isLoginSelected
                                       ? Colors.grey[200]
@@ -104,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  'Sign Up', // Corrected "Sing Up" to "Sign Up"
+                                  'Sign Up',
                                   style: TextStyle(
                                     color: isLoginSelected
                                         ? Colors.grey
@@ -118,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 20),
                         // Text fields for mobile number and password
                         TextField(
+                          controller: mobileController,
                           decoration: InputDecoration(
                             labelText: 'Enter Mobile no.',
                             border: UnderlineInputBorder(),
@@ -125,48 +174,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 20),
                         TextField(
+                          controller: passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
                             border: UnderlineInputBorder(),
                           ),
                           obscureText: true,
                         ),
-                        SizedBox(height: 10),
-                        if (isLoginSelected)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: GestureDetector(
-                              onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
-                                );
-                              },
-                              child: Text(
-                                'Forget Password?',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ),
-                          ),
                         SizedBox(height: 30),
                         // Log In or Sign Up button
                         GestureDetector(
                           onTap: () {
-                            if (isLoginSelected) {
-                              // Handle Log In action
-                              print('Log In button pressed');
-                            } else {
-                              // Handle Sign Up action
-                              print('Sign Up button pressed');
+                            final mobile = mobileController.text.trim();
+                            final password = passwordController.text.trim();
+
+                            if (mobile.isEmpty || password.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Please fill all fields")));
+                              return;
                             }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
-                            );
+
+                            if (isLoginSelected) {
+                              login(mobile, password);
+                            } else {
+                              signUp(mobile, password);
+                            }
                           },
                           child: Container(
                             width: double.infinity,

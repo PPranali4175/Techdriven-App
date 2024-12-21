@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "729805586290",
+    "project_id": "online-learning-app-c4614",
+    "storage_bucket": "online-learning-app-c4614.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729805586290:android:4a6500793bbab3e0eb27eb",
+        "android_client_info": {
+          "package_name": "com.example.majorproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729805586290-31vletp5adoc8qccqpedtfp7vglf3776.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuep_wl8maflEB5R-f1UUj5Tk9F4C95RA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729805586290-31vletp5adoc8qccqpedtfp7vglf3776.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "729805586290-thlekandtuhr43ipo59937e602p9ko0b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.onlinelearningapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729805586290:android:bdb0af935b4b0f83eb27eb",
+        "android_client_info": {
+          "package_name": "com.mycompany.onlinelearningapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729805586290-31vletp5adoc8qccqpedtfp7vglf3776.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuep_wl8maflEB5R-f1UUj5Tk9F4C95RA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729805586290-31vletp5adoc8qccqpedtfp7vglf3776.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "729805586290-thlekandtuhr43ipo59937e602p9ko0b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.onlinelearningapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
